@@ -12,7 +12,6 @@ const app = express();
 
 
 
-
 // HTTP ROUTES
 
 // Homepage Route
@@ -36,12 +35,11 @@ app.get("/campgrounds", function(req, res){ // Using express to create HTTP rout
 
 
 
-
 // SERVER
 
 // Setting localhost port
 const port = 3000
-// Server displaying app on localhost:3000
+// Server displaying app on localhost:3000 with success message log
 app.listen(port, () => console.log(`YelpCamp app server listening on port ${port}!`))
 
 
