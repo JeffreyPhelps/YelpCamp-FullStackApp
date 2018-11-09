@@ -2,6 +2,7 @@
 
 
 
+
 // PACKAGES
 
 // Initializing Express.js NPM package
@@ -11,6 +12,26 @@ const app = express();
 // Initializing body-parser NPM package
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+
+// Initializing Mongoose NPM package
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/yelpcampdb");
+
+
+
+
+// DATABASE SCHEMA
+
+// Mongo Schema Setup
+let campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String
+});
+
+// Compiling schema into a model, connecting schema to reference name
+const Campground = mongoose.model("Campground", campgroundSchema);
+
+
 
 
 
@@ -37,30 +58,35 @@ app.get("/", function(req, res){ // Using express to create HTTP route, with req
 // Campgrounds Route
 app.get("/campgrounds", function(req, res){ // Using express to create HTTP route, with required callback
     res.render("campgrounds.ejs", {campgrounds:campgroundsArray}); // Rendering the campgrounds file from the views folder
-});                                                                // and the campgroundsArray as "campgrounds" variable
-
-
-
-app.get("/campgrounds/new", function(req, res){
-    res.render("newcamp.ejs");
 });
 
-
+// Campgrounds Route
 app.post("/campgrounds", function(req, res){
     let name = req.body.name;
     let image = req.body.image;
     let newCampground = {name: name, image: image};
     campgroundsArray.push(newCampground);
     res.redirect("/campgrounds");
+});                                                                // and the campgroundsArray as "campgrounds" variable
+
+// New campground Route
+app.get("/campgrounds/new", function(req, res){
+    res.render("newcamp.ejs");
 });
+
 
 
 
 // SERVER
 
-// Setting localhost port
-const port = 3000
-// Server displaying app on localhost:3000 with success message log
-app.listen(port, () => console.log(`YelpCamp app server listening on port ${port}!`))
+// // Setting localhost port
+// const port = 3000
+// // Server displaying app on localhost:3000 with success message log
+// app.listen(port, () => console.log(`YelpCamp app server listening on port ${port}!`))
+
+
+app.listen(process.env.PORT, process.env.IP, function(){
+   console.log("Server up and running on...Some Fn port!"); 
+});
 
 
