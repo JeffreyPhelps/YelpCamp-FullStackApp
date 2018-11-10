@@ -32,17 +32,24 @@ let campgroundSchema = new mongoose.Schema({
 const Campground = mongoose.model("Campground", campgroundSchema);
 
 
+// Campground.create(
+//     {
+//         name: "Granite Hill", 
+//         image: "https://cdn.pixabay.com/photo/2015/07/10/17/24/night-839807_960_720.jpg"
+        
+//     }, function(err, addedCampground){
+//         if(err){
+//             console.log(err)
+//         } else {
+//             console.log("NEWLY CREATED CAMPGROUND:");
+//             console.log(addedCampground);
+//         }
+//     });
 
 
 
 
 
-// Creating initial campgrounds array and variable
-let campgroundsArray = [
-    {name: "Salmon Creek", image: "https://cdn.pixabay.com/photo/2016/11/29/04/17/bonfire-1867275_960_720.jpg"},
-    {name: "Granite Hill", image: "https://cdn.pixabay.com/photo/2015/07/10/17/24/night-839807_960_720.jpg"},
-    {name: "Goat's Rest", image: "https://cdn.pixabay.com/photo/2016/11/22/23/08/adventure-1851092_960_720.jpg"}
-]
 
 
 
@@ -55,18 +62,36 @@ app.get("/", function(req, res){ // Using express to create HTTP route, with req
     res.render("index.ejs"); // Rendering the index file from the views folder
 });
 
-// Campgrounds Route
+// Campgrounds get Route
 app.get("/campgrounds", function(req, res){ // Using express to create HTTP route, with required callback
-    res.render("campgrounds.ejs", {campgrounds:campgroundsArray}); // Rendering the campgrounds file from the views folder and the campgroundsArray as "campgrounds" variable
+    Campground.find({}, function(err, databaseCampgrounds){
+        if(err){
+            console.log(err)
+        } else {
+            // Rendering the campgrounds file from the views folder and the campgrounds from the "yelpcampdb" Mongo database
+            res.render("campgrounds.ejs", {campgrounds:databaseCampgrounds});
+        }
+    });
 });
 
-// Campgrounds Route
+// Campgrounds post Route
 app.post("/campgrounds", function(req, res){
+    // Grabbing "name" from newcamp.ejs form and saving to "name" variable
     let name = req.body.name;
+    // Grabbing "image" from newcamp.ejs form and saving to "image" variable
     let image = req.body.image;
+    // Creating a database usable variable, an object, the names and images of which house the above form variables
     let newCampground = {name: name, image: image};
-    campgroundsArray.push(newCampground);
-    res.redirect("/campgrounds");
+    // Create a new campground and saving it to the "yelpcampdb" database
+    Campground.create(newCampground, function(err, newlyCreated){
+        if(err){
+            console.log(err)
+        } else {
+            res.redirect("/campgrounds");
+            console.log("A NEW CAMPGROUND WAS CREATED:");
+            console.log(newlyCreated);
+        }
+    });
 });
 
 // New Campground Route
