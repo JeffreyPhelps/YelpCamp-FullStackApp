@@ -69,7 +69,7 @@ app.post("/campgrounds", function(req, res){
     res.redirect("/campgrounds");
 });
 
-// New campground Route
+// New Campground Route
 app.get("/campgrounds/new", function(req, res){
     res.render("newcamp.ejs");
 });
@@ -84,9 +84,10 @@ app.get("/campgrounds/new", function(req, res){
 // // Server displaying app on localhost:3000 with success message log
 // app.listen(port, () => console.log(`YelpCamp app server listening on port ${port}!`))
 
-
+// process.env must be used on Amazon c9.io dev platform in order to view local app
 app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("Server up and running on...Some Fn port!"); 
+   console.log("Server up and running!!!");
 });
+
 
 
