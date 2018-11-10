@@ -57,7 +57,7 @@ app.get("/", function(req, res){ // Using express to create HTTP route, with req
 
 // Campgrounds Route
 app.get("/campgrounds", function(req, res){ // Using express to create HTTP route, with required callback
-    res.render("campgrounds.ejs", {campgrounds:campgroundsArray}); // Rendering the campgrounds file from the views folder
+    res.render("campgrounds.ejs", {campgrounds:campgroundsArray}); // Rendering the campgrounds file from the views folder and the campgroundsArray as "campgrounds" variable
 });
 
 // Campgrounds Route
@@ -67,7 +67,7 @@ app.post("/campgrounds", function(req, res){
     let newCampground = {name: name, image: image};
     campgroundsArray.push(newCampground);
     res.redirect("/campgrounds");
-});                                                                // and the campgroundsArray as "campgrounds" variable
+});
 
 // New campground Route
 app.get("/campgrounds/new", function(req, res){
