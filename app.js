@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Initializing Mongoose NPM package
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/yelpcampdb");
+mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true});
 
 
 
@@ -25,7 +25,8 @@ mongoose.connect("mongodb://localhost/yelpcampdb");
 // Mongo Schema Setup
 let campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 // Compiling schema into a model, connecting schema to reference name
@@ -60,8 +61,10 @@ app.post("/campgrounds", function(req, res){
     let name = req.body.name;
     // Grabbing "image" from newcamp.ejs form and saving to "image" variable
     let image = req.body.image;
+    // Grabbing "description" from newcamp.ejs form and saving to "description" variable
+    let description = req.body.description;
     // Creating a database usable variable, an object, the names and images of which house the above form variables
-    let newCampground = {name: name, image: image};
+    let newCampground = {name: name, image: image, description: description};
     // Create a new campground and saving it to the "yelpcampdb" database
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
@@ -77,6 +80,13 @@ app.post("/campgrounds", function(req, res){
 // New Campground Route
 app.get("/campgrounds/new", function(req, res){
     res.render("newcamp.ejs");
+});
+
+// Show Campground Info Route
+app.get("/campgrounds/:id", function(req, res){
+    // Find the campground with provided id
+    // Render show template with that campground
+    res.render("campdetails.ejs"); 
 });
 
 
