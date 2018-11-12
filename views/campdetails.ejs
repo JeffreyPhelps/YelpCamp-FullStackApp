@@ -4,12 +4,11 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <h3>Campground Details</h3>
+        <h1><%= campground.name %></h1>
+        <img src="<%= campground.image %>">
+        <br><br>
+        <p><%= campground.description %></p>
     </div>
-</div>
-
-<div class="row">
-    <h1>this is where the campground details will go</h1>
 </div>
 
 <% include partials/footer %>

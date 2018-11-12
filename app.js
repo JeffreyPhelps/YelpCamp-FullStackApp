@@ -13,9 +13,9 @@ const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Initializing Mongoose NPM package
+// Initializing Mongoose NPM package and setting the Mongo database name, "yelpcampdb"
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
 
 
 
@@ -85,8 +85,16 @@ app.get("/campgrounds/new", function(req, res){
 // Show Campground Info Route
 app.get("/campgrounds/:id", function(req, res){
     // Find the campground with provided id
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            console.log(err);
+        } else{
+            res.render("campdetails.ejs", {campground: foundCampground});
+        }
+    });
+    
     // Render show template with that campground
-    res.render("campdetails.ejs"); 
+     
 });
 
 
