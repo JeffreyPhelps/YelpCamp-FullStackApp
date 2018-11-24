@@ -19,18 +19,12 @@ mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // 
 
 
 
+// IMPORTS
 
-// DATABASE SCHEMA
+// Importing the Campground Schema and model from campground.js
+const Campground = require("./models/campground.js");
 
-// Mongo Schema Setup
-let campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
 
-// Compiling schema into a model, connecting schema to reference name
-const Campground = mongoose.model("Campground", campgroundSchema);
 
 
 
@@ -93,8 +87,6 @@ app.get("/campgrounds/:id", function(req, res){
         }
     });
     
-    // Render show template with that campground
-     
 });
 
 
