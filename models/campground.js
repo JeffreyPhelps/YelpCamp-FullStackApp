@@ -10,7 +10,13 @@ const mongoose = require("mongoose");
 let campgroundSchema = new mongoose.Schema({
     name: String,
     image: String,
-    description: String
+    description: String,
+    comments: [
+      {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: "Comment"
+      }
+   ]
 });
 
 // Compiling schema into a model, connecting schema to reference name, and exporting to app.js

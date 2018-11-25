@@ -25,7 +25,7 @@ mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // 
 // Importing the Campground Schema and model from campground.js
 const Campground = require("./models/campground.js");
 
-// Importing DB Seeds file, seeds.js
+// Importing database seed file, seeds.js
 const seedDB = require("./seeds.js");
 
 // Calling function from seeds.js 
@@ -83,7 +83,7 @@ app.get("/campgrounds/new", function(req, res){
 // Show Campground Info Route
 app.get("/campgrounds/:id", function(req, res){
     // Find the campground with provided id
-    Campground.findById(req.params.id, function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err){
             console.log(err);
         } else{
