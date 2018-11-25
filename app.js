@@ -19,13 +19,17 @@ mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // 
 
 
 
+
 // IMPORTS
 
 // Importing the Campground Schema and model from campground.js
 const Campground = require("./models/campground.js");
 
+// Importing DB Seeds file, seeds.js
+const seedDB = require("./seeds.js");
 
-
+// Calling function from seeds.js 
+seedDB();
 
 
 
