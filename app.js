@@ -37,6 +37,14 @@ seedDB();
 
 
 
+// FUNCTIONALITY AND STYLING
+
+// Setting folder
+app.use(express.static(__dirname + "/public")); // "__dirname" refers to the main project folder
+
+
+
+
 // HTTP ROUTES
 
 // Homepage Route
