@@ -20,20 +20,20 @@
                 <img src="<%= campground.image %>" class="img-responsive">
                 <div class="caption">
                     <div class="pull-right"><strong>$9.00/night</strong></div>
-                    <h3><%= campground.name %></h3>
+                    <h2><%= campground.name %></h2>
                     <p><%= campground.description %></p>
                 </div>
             </div>
             
             <div class="well">
-                <span>Comments:</span>
+                <span id="commenttitle">Comments:</span>
                 <div class="text-right">
                     <a href="/campgrounds/<%= campground._id %>/comments/new" class="btn btn-success">LEAVE REVIEW</a>
                 </div>
                 <hr>
                 <% campground.comments.forEach(function(comment){ %>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="eachcomment">
                             <strong><%= comment.author %> -</strong>
                             <span class="pull-right">10 days ago</span>
                             <p><%= comment.text %></p>
