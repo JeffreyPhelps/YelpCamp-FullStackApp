@@ -5,42 +5,39 @@
 
 // PACKAGES
 
-// Initializing Express.js NPM package
-const express = require("express");
-const app = express();
-
-// Initializing body-parser NPM package
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
-
-// Initializing Mongoose NPM package and setting the Mongo database name, "yelpcampdb"
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
-
-
+// Initializing NPM packages
+const   express = require("express"),
+        app = express(),
+        bodyParser = require("body-parser"),
+        mongoose = require("mongoose"),
+        passport = require("passport"),
+        LocalStrategy = require("passport-local");
+        
 
 
 // IMPORTS
 
-// Importing the Campground Schema and model from campground.js
-const Campground = require("./models/campground.js");
+const   Campground = require("./models/campground.js"), // Importing the Campground Schema and model from campground.js
+        Comment = require("./models/comment.js"), // Importing the Comments Schema and model from comment.js
+        seedDB = require("./seeds.js") // Importing database seed file, seeds.js
 
-// Importing the Comments Schema and model from comment.js
-const Comment = require("./models/comment.js");
 
-// Importing database seed file, seeds.js
-const seedDB = require("./seeds.js");
 
-// Calling function from seeds.js 
+// Connecting Mongoose and setting the Mongo database name, "yelpcampdb"
+mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
+
+// Setting body-parser NPM package
+app.use(bodyParser.urlencoded({extended: true}));
+
+// Setting the app view engine as ejs
+app.set("view engine", "ejs");
+
+// Setting app folder
+app.use(express.static(__dirname + "/public")); // "__dirname" refers to the main project folder
+
+// Calling function from seeds.js to seed mongo database
 seedDB();
 
-
-
-
-// FUNCTIONALITY AND STYLING
-
-// Setting folder
-app.use(express.static(__dirname + "/public")); // "__dirname" refers to the main project folder
 
 
 
@@ -141,17 +138,19 @@ app.post("/campgrounds/:id/comments", function(req, res){
 
 
 
-// SERVER
+ // SERVER
 
 // // Setting localhost port
 // const port = 3000
 // // Server displaying app on localhost:3000 with success message log
 // app.listen(port, () => console.log(`YelpCamp app server listening on port ${port}!`))
 
-// process.env must be used on Amazon c9.io dev platform in order to view local app
+// process.env must be used on Amazon c9.io dev platform to view local app
 app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("Server up and running!!!");
+  console.log("Server up and running!!!");
+  console.log("Go to link: https://yelpcampapp-phelpsjeffrey.c9users.io/")
 });
+
 
 
 
