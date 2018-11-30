@@ -19,7 +19,8 @@ const   express = require("express"),
 
 const   Campground = require("./models/campground.js"), // Importing the Campground Schema and model from campground.js
         Comment = require("./models/comment.js"), // Importing the Comments Schema and model from comment.js
-        seedDB = require("./seeds.js") // Importing database seed file, seeds.js
+        User = require("./models/user.js"), // Importing user database seed file, user.js
+        seedDB = require("./seeds.js"); // Importing database seed file, seeds.js
 
 
 
@@ -46,7 +47,8 @@ seedDB();
 
 // Homepage Route
 app.get("/", function(req, res){ // Using express to create HTTP route, with required callback
-    res.render("index.ejs"); // Rendering the index file from the views folder
+    // res.render("index.ejs")
+    res.redirect("/campgrounds"); // Initially rendering campgrounds page as the homepage
 });
 
 // Campgrounds get Route
