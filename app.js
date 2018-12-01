@@ -24,6 +24,7 @@ const   Campground = require("./models/campground.js"), // Importing the Campgro
 
 
 
+
 // Connecting Mongoose and setting the Mongo database name, "yelpcampdb"
 mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
 
@@ -39,6 +40,23 @@ app.use(express.static(__dirname + "/public")); // "__dirname" refers to the mai
 // Calling function from seeds.js to seed mongo database
 seedDB();
 
+
+
+
+// Passport Auth Config
+app.use(require("express-session")({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+// Encripting and Decripting user auth data
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 
@@ -136,8 +154,45 @@ app.post("/campgrounds/:id/comments", function(req, res){
     });
 });
 
+// Auth Route
+app.get("/register", function(req, res){
+    res.render("register.ejs");
+});
 
+// Signup Logic
+app.post("/register", function(req, res){
+    let newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user){
+        if(err){
+            console.log(err)
+            return res.render("register.ejs")
+        }
+        passport.authenticate("local")(req, res, function(){
+            res.redirect("/campgrounds");
+        });
+    });
+});
 
+// Login Route
+app.get("/login", function(req, res){
+    res.render("login.ejs");
+});
+
+// Login Logic
+app.post("/login", passport.authenticate("local", 
+    {
+        successRedirect: "/campgrounds", 
+        failureRedirect: "/login"
+        
+    }), function(req, res){
+    
+});
+
+// Logout Route
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/campgrounds")
+});
 
 
  // SERVER
