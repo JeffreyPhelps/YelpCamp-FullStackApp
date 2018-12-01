@@ -59,6 +59,12 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+});
+
+
 
 
 // HTTP ROUTES
@@ -76,7 +82,7 @@ app.get("/campgrounds", function(req, res){ // Using express to create HTTP rout
             console.log(err);
         } else {
             // Rendering the campgrounds file from the views folder and the campgrounds from the "yelpcampdb" Mongo database
-            res.render("campgrounds.ejs", {campgrounds:databaseCampgrounds});
+            res.render("campgrounds.ejs", {campgrounds:databaseCampgrounds, currentUser: req.user});
         }
     });
 });
