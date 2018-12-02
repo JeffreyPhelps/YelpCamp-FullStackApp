@@ -97,16 +97,18 @@ app.post("/campgrounds", function(req, res){
     let image = req.body.image;
     // Grabbing "description" from newcamp.ejs form and saving to "description" variable
     let description = req.body.description;
+    // Grabbing username and user id from logged in user
+    let author = {id: req.user._id, username: req.user.username};
     // Creating a database usable variable, an object, the names and images of which house the above form variables
-    let newCampground = {name: name, image: image, description: description};
+    let newCampground = {name: name, image: image, description: description, author: author};
     // Create a new campground and saving it to the "yelpcampdb" database
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
             console.log(err);
         } else {
-            res.redirect("/campgrounds");
             console.log("A NEW CAMPGROUND WAS CREATED:");
             console.log(newlyCreated);
+            res.redirect("/campgrounds");
         }
     });
 });
@@ -214,8 +216,15 @@ function isLoggedIn(req, res, next){
 }
 
 
-
-
+// // Run only when wanting to remove all campgrounds
+// // Remove all campgrounds
+// Campground.remove({}, function(err){
+//     if(err){
+//         console.log(err)
+//     } else {
+//         console.log("Removed all campgrounds");
+//     }
+// });
 
 
 
