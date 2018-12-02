@@ -36,7 +36,7 @@
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Sign Up</a></li>
                         <% } else { %>
-                            <li>Signed in: <%= currentUser.username %></li>
+                            <li id="userNotify"><a href="#">Signed In: <%= currentUser.username %></a></li>
                             <li><a href="/logout">Logout</a></li>
                         <% } %>
                     </ul>
@@ -46,15 +46,14 @@
 
         <!-- Main Container -->
         <div class="container"> <!-- Closes in footer.ejs -->
-
-            <header class="jumbotron jumbotron-med"> <!-- Main Top Jumbotron -->
-                
-                <h2>YELP<small>camp</small></h2>
-                <h4>Hand-Picked Campgrounds From All Over The World</h4>
-                </br>
-                <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add New Campground</a>
-
-            </header>
+        
+            <div class="jumbotron jumbotron-fluid">
+              <div class="container">
+                <h1 class="display-4">YELP<small>camp</small></h1>
+                <p class="lead">Hand-Picked Campgrounds From All Over The World</p>
+                <!--<a class="btn btn-primary btn-med" href="/campgrounds/new" id="newcampbutton">Add New Campground</a>-->
+              </div>
+            </div>
 
 
     

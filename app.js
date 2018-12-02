@@ -38,7 +38,9 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public")); // "__dirname" refers to the main project folder
 
 // Calling function from seeds.js to seed mongo database
-seedDB();
+// seedDB();
+
+// Seed Database
 
 
 
@@ -75,13 +77,13 @@ app.get("/", function(req, res){ // Using express to create HTTP route, with req
     res.redirect("/campgrounds"); // Initially rendering campgrounds page as the homepage
 });
 
-// Campgrounds get Route
+// Campgrounds Route
 app.get("/campgrounds", function(req, res){ // Using express to create HTTP route, with required callback
     Campground.find({}, function(err, databaseCampgrounds){
         if(err){
             console.log(err);
         } else {
-            // Rendering the campgrounds file from the views folder and the campgrounds from the "yelpcampdb" Mongo database
+            // Rendering the campgrounds file from the views folder
             res.render("campgrounds.ejs", {campgrounds:databaseCampgrounds, currentUser: req.user});
         }
     });
@@ -150,6 +152,9 @@ app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
                 if(err){
                     console.log(err);
                 } else {
+                    comment.author.id = req.user._id;
+                    comment.author.username = req.user.username;
+                    comment.save();
                     campground.comments.push(comment);
                     campground.save();
                     res.redirect("/campgrounds/" + campground._id);
