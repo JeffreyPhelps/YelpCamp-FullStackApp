@@ -11,7 +11,8 @@ const   express = require("express"),
         bodyParser = require("body-parser"),
         mongoose = require("mongoose"),
         passport = require("passport"),
-        LocalStrategy = require("passport-local");
+        LocalStrategy = require("passport-local"),
+        methodOverride = require("method-override");
         
 
 
@@ -36,6 +37,10 @@ app.set("view engine", "ejs");
 
 // Setting app folder
 app.use(express.static(__dirname + "/public")); // "__dirname" refers to the main project folder
+
+// Setting method override name
+app.use(methodOverride("_method"));
+
 
 // Calling function from seeds.js to seed mongo database
 // seedDB();
@@ -129,6 +134,32 @@ app.get("/campgrounds/:id", function(req, res){
         }
     });
     
+});
+
+
+// Edit Campground Route
+app.get("/campgrounds/:id/editcamp", function(req, res){
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds/:id");
+        } else {
+            res.render("editcamp.ejs", {campground: foundCampground});
+        }
+    });
+});
+
+
+// Update Campground Route
+app.put("/campgrounds/:id", function(req, res){
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updateCampground){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds/:id");
+        } else {
+            res.redirect("/campgrounds/" + req.params.id);
+        }
+    });
 });
 
 
