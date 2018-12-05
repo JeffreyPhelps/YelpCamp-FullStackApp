@@ -45,8 +45,6 @@ app.use(methodOverride("_method"));
 // Calling function from seeds.js to seed mongo database
 // seedDB();
 
-// Seed Database
-
 
 
 
@@ -65,7 +63,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
+// Middleware Functionality
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
@@ -94,8 +92,8 @@ app.get("/campgrounds", function(req, res){ // Using express to create HTTP rout
     });
 });
 
-// Campgrounds post Route
-app.post("/campgrounds", function(req, res){
+// New Campground post Route
+app.post("/campgrounds", isLoggedIn, function(req, res){
     // Grabbing "name" from newcamp.ejs form and saving to "name" variable
     let name = req.body.name;
     // Grabbing "image" from newcamp.ejs form and saving to "image" variable
@@ -118,7 +116,7 @@ app.post("/campgrounds", function(req, res){
     });
 });
 
-// New Campground Route
+// New Campground Form Route
 app.get("/campgrounds/new", isLoggedIn, function(req, res){
     res.render("newcamp.ejs");
 });
@@ -137,8 +135,8 @@ app.get("/campgrounds/:id", function(req, res){
 });
 
 
-// Edit Campground Route
-app.get("/campgrounds/:id/editcamp", function(req, res){
+// Edit Campground Form Route
+app.get("/campgrounds/:id/editcamp", checkCampgroundOwnership, function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
         if(err){
             console.log(err);
@@ -151,7 +149,7 @@ app.get("/campgrounds/:id/editcamp", function(req, res){
 
 
 // Update Campground Route
-app.put("/campgrounds/:id", function(req, res){
+app.put("/campgrounds/:id", checkCampgroundOwnership, function(req, res){
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updateCampground){
         if(err){
             console.log(err);
@@ -163,7 +161,21 @@ app.put("/campgrounds/:id", function(req, res){
 });
 
 
-// Comments Route
+// Delete campground Route
+app.delete("/campgrounds/:id", checkCampgroundOwnership, function(req, res){
+    Campground.findByIdAndRemove(req.params.id, function(err, deleted){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds/:id");
+        } else {
+            console.log("Campground " + deleted + " Removed!");
+            res.redirect("/campgrounds");
+        }
+    });
+});
+
+
+// New Comment Form Route
 app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     Campground.findById(req.params.id, function(err, campground){
        if(err){
@@ -174,7 +186,7 @@ app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     });
 });
 
-// Comments Post Route
+// New Comment Post Route
 app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     Campground.findById(req.params.id, function(err, campground){
         if(err){
@@ -196,6 +208,45 @@ app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
         }
     });
 });
+
+
+// Comment Edit Form Route
+app.get("/campgrounds/:id/comments/:comment_id/edit", function(req, res){
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        if(err){
+            console.log(err);
+            res.redirect("back");
+        } else {
+            res.render("editcomment.ejs", {campground_id: req.params.id, comment: foundComment});
+        }
+    });
+});
+
+// Comment Update Route
+app.put("/campgrounds/:id/comments/:comment_id", function(req, res){
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+        if(err){
+            console.log(err);
+            res.redirect("back");
+        } else {
+            res.redirect("/campgrounds/" + req.params.id);
+        }
+    });
+});
+
+// Comment Delete Route
+app.delete("/campgrounds/:id/comments/:comment_id", function(req, res){
+    Comment.findByIdAndRemove(req.params.comment_id, function(err, deletedComment){
+        if(err){
+            console.log(err);
+            res.redirect("back");
+        } else {
+            console.log("Comment " + deletedComment + " Removed!");
+            res.redirect("/campgrounds/" + req.params.id);
+        }
+    });
+});
+
 
 // Auth Route
 app.get("/register", function(req, res){
@@ -246,6 +297,28 @@ function isLoggedIn(req, res, next){
     res.redirect("/login");
 }
 
+// Check Campground Ownership Middleware
+function checkCampgroundOwnership(req, res, next){
+    if(req.isAuthenticated()){
+        Campground.findById(req.params.id, function(err, foundCampground){
+            if(err){
+                res.redirect("back");
+            } else {
+                if(foundCampground.author.id.equals(req.user._id)) { // ".equals" method comes with mongoose
+                    next();
+                } else {
+                    res.redirect("back");
+                }
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
+}
+
+
+
+
 
 // // Run only when wanting to remove all campgrounds
 // // Remove all campgrounds
@@ -270,7 +343,7 @@ function isLoggedIn(req, res, next){
 // process.env must be used on Amazon c9.io dev platform to view local app
 app.listen(process.env.PORT, process.env.IP, function(){
   console.log("Server up and running!!!");
-  console.log("Go to link: https://yelpcampapp-phelpsjeffrey.c9users.io/")
+  console.log("Go to link: https://yelpcampapp-phelpsjeffrey.c9users.io/");
 });
 
 
