@@ -3,13 +3,13 @@
 
 
 
-// PACKAGES
+// NPM PACKAGES
 
-// Initializing NPM packages
 const   express = require("express"),
         app = express(),
         bodyParser = require("body-parser"),
         mongoose = require("mongoose"),
+        flash = require("connect-flash"),
         passport = require("passport"),
         LocalStrategy = require("passport-local"),
         methodOverride = require("method-override");
@@ -26,10 +26,10 @@ const   Campground = require("./models/campground.js"), // Importing the Campgro
 
 
 
-// Connecting Mongoose and setting the Mongo database name, "yelpcampdb"
+// Initializing Mongoose and setting the Mongo database name, "yelpcampdb"
 mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
 
-// Setting body-parser NPM package
+// Initializing body-parser NPM package
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Setting the app view engine as ejs
@@ -40,6 +40,9 @@ app.use(express.static(__dirname + "/public")); // "__dirname" refers to the mai
 
 // Setting method override name
 app.use(methodOverride("_method"));
+
+// Initializing Flash.js
+app.use(flash());
 
 
 // Calling function from seeds.js to seed mongo database
@@ -65,7 +68,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // Middleware Functionality
 app.use(function(req, res, next){
-    res.locals.currentUser = req.user;
+    res.locals.currentUser = req.user; // Passing "currentUser" to every template
     next();
 });
 
@@ -77,7 +80,7 @@ app.use(function(req, res, next){
 // Homepage Route
 app.get("/", function(req, res){ // Using express to create HTTP route, with required callback
     // res.render("index.ejs")
-    res.redirect("/campgrounds"); // Initially rendering campgrounds page as the homepage
+    res.render("index.ejs");
 });
 
 // Campgrounds Route
@@ -98,12 +101,14 @@ app.post("/campgrounds", isLoggedIn, function(req, res){
     let name = req.body.name;
     // Grabbing "image" from newcamp.ejs form and saving to "image" variable
     let image = req.body.image;
+    // Grabbing "price" from newcamp.ejs form and saving to "price" variable
+    let price = req.body.price;
     // Grabbing "description" from newcamp.ejs form and saving to "description" variable
     let description = req.body.description;
     // Grabbing username and user id from logged in user
     let author = {id: req.user._id, username: req.user.username};
     // Creating a database usable variable, an object, the names and images of which house the above form variables
-    let newCampground = {name: name, image: image, description: description, author: author};
+    let newCampground = {name: name, image: image, description: description, price: price, author: author};
     // Create a new campground and saving it to the "yelpcampdb" database
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
@@ -269,7 +274,7 @@ app.post("/register", function(req, res){
 
 // Login Route
 app.get("/login", function(req, res){
-    res.render("login.ejs");
+    res.render("login.ejs", {message: req.flash("error")});
 });
 
 // Login Logic
@@ -289,11 +294,16 @@ app.get("/logout", function(req, res){
 });
 
 
+
+
+// MIDDLEWARE
+
 // Login Middleware
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
     }
+    req.flash("error", "Please log in first!"); // Calling an instance of Flash.js, before redirect.
     res.redirect("/login");
 }
 
