@@ -12,6 +12,10 @@ img {
     border: 1px solid lightgrey;
 }
 
+#campinfo {
+  padding: 0 20px 20px 20px;
+}
+
 #commenttitle {
     font-size: 1.8em;
 }
@@ -118,4 +122,7 @@ img {
 .no-cssanimations .slideshow li {
 	opacity: 1;
 }
+
+/* End Landing Page Slideshow */
+
 
