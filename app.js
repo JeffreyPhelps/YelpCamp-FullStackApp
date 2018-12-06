@@ -68,7 +68,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // Middleware Functionality
 app.use(function(req, res, next){
-    res.locals.currentUser = req.user; // Passing "currentUser" to every template
+    res.locals.currentUser = req.user; // Passing "currentUser" as "req.user" to every template
     next();
 });
 
@@ -97,19 +97,20 @@ app.get("/campgrounds", function(req, res){ // Using express to create HTTP rout
 
 // New Campground post Route
 app.post("/campgrounds", isLoggedIn, function(req, res){
-    // Grabbing "name" from newcamp.ejs form and saving to "name" variable
+    
+    // Grabbing form variables from newcamp.ejs form and saving as related variables
     let name = req.body.name;
-    // Grabbing "image" from newcamp.ejs form and saving to "image" variable
     let image = req.body.image;
-    // Grabbing "price" from newcamp.ejs form and saving to "price" variable
     let price = req.body.price;
-    // Grabbing "description" from newcamp.ejs form and saving to "description" variable
     let description = req.body.description;
+    
     // Grabbing username and user id from logged in user
     let author = {id: req.user._id, username: req.user.username};
-    // Creating a database usable variable, an object, the names and images of which house the above form variables
+    
+    // Creating a database usable variable object, consisting of above variables
     let newCampground = {name: name, image: image, description: description, price: price, author: author};
-    // Create a new campground and saving it to the "yelpcampdb" database
+    
+    // Create a new campground, passing in above "newCampground" variable object, and saving it to the "yelpcampdb" database
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
             console.log(err);
