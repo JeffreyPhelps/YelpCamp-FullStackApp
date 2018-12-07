@@ -26,8 +26,11 @@ const   Campground = require("./models/campground.js"), // Importing the Campgro
 
 
 
-// Initializing Mongoose and setting the Mongo database name, "yelpcampdb"
-mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
+// // Initializing Mongoose and setting the Mongo database name, "yelpcampdb", for local db environment only
+// mongoose.connect("mongodb://localhost/yelpcampdb", {useNewUrlParser: true}); // Optional {useNewUrlParser: true} object for Amazon c9.io to clear future error warning
+
+// Using remote mLab.com MongoDB hosting platform, instead of above local db connection. username: yelpcampuser   pw: password1
+mongoose.connect("mongodb://yelpcampuser:password1@ds123400.mlab.com:23400/yelpcampmongodb");
 
 // Initializing body-parser NPM package
 app.use(bodyParser.urlencoded({extended: true}));
